@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AssignSupervisor;
 use Illuminate\Http\Request;
+use App\Models\Department;
 use Yajra\DataTables\DataTables;
 
 class AssignSupervisorController extends Controller
@@ -22,7 +23,7 @@ class AssignSupervisorController extends Controller
                 ->make(true);
         }
 
-        return view('admin.assignsupervisor.index');
+        return view('admin.assignsupervisor.index',['deparment_list' => Department::all()]);
     }
 
     /**

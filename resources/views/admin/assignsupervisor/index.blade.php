@@ -7,5 +7,7 @@
 @endsection
 
 @section('content')
-
+    <div class="row">
+        {!! SelectField('s4','Select Department','department',$department_list)  !!}
+    </div>
 @endsection
