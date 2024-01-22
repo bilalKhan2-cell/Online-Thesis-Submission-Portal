@@ -32,7 +32,7 @@ class ProjectLead extends Model
         return $this->belongsTo(Department::class, 'department_id');
     }
 
-    public function user()
+    public function users()
     {
         return $this->belongsTo(User::class, 'user_id');
     }

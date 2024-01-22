@@ -120,7 +120,7 @@ class UserController extends Controller
     {
         $data = User::find($userID)->update(['status' => 0]);
         if ($data) {
-            return redirect()->route('users.index')->with('user-inactive', 'User Account Marked Active..');
+            return redirect()->route('users.index')->with('user-inactive', 'User Account Marked Inactive..');
         }
     }
 

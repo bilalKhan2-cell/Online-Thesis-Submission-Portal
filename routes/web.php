@@ -4,6 +4,7 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\ProjectLeadController;
 use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AssignSupervisorController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -22,3 +23,5 @@ Route::get('/supervisors/{id}/inactive', [SupervisorController::class, 'Inactive
 Route::get('/supervisors/{id}/activate', [SupervisorController::class, 'ActivateAccount'])->name('supervisors.active');
 
 Route::resource('project_leads',ProjectLeadController::class);
+
+Route::resource('assign_supervisor',AssignSupervisorController::class);

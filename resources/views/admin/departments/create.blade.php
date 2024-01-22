@@ -42,7 +42,7 @@
             messages: {
                 name: {
                     required: "Department Name is Required..",
-                    remote: "Department With This Name is Already Exist."
+                    remote: "This Department is Already Exist."
                 }
             }
         })

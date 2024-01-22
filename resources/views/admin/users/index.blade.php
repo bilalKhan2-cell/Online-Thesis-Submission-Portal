@@ -19,6 +19,18 @@
                 {!! ShowAlertMessage('blue', session()->get('user-edit-success')) !!}
             @endif
 
+            @if (session()->has('user-inactive'))
+                {!! ShowAlertMessage('red', session()->get('user-inactive')) !!}
+            @endif
+
+            @if (session()->has('user-active'))
+                {!! ShowAlertMessage('red', session()->get('user-active')) !!}
+            @endif
+
+            @if (session()->has('invald-users'))
+                {!! ShowAlertMessage('red', session()->get('invald-users')) !!}
+            @endif
+
             <a href="{{ route('users.create') }}" class="btn blue float-right">Register User</a>
             <br><br>
             {!! GenerateTable('tblUsers', 'table table-hover striped', [

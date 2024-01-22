@@ -20,6 +20,14 @@
             <a href="{{route('supervisors.index')}}" class="waves-effect waves-cyan">
             <i class="material-icons">person</i>Supervisors</a>
         </li>
+        <li class="bold">
+            <a href="{{route('project_leads.index')}}" class="waves-effect waves-cyan">
+            <i class="material-icons">group</i>Project Leads</a>
+        </li>
+        <li class="bold">
+            <a href="{{route('assign_supervisor.index')}}" class="waves-effect waves-cyan">
+            <i class="material-icons">assignment</i>Assign Supervisor</a>
+        </li>
     </ul>
     <div class="navigation-background"></div><a
         class="sidenav-trigger btn-sidenav-toggle btn-floating btn-medium waves-effect waves-light hide-on-large-only"

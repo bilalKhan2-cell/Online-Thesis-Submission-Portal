@@ -75,9 +75,8 @@ class DepartmentController extends Controller
         //
     }
 
-    public function name_exist(Request $request){
-        return response()->json([
-            'valid' => !Department::where('name',ucwords($request->name))->exists()
-        ]);
+    public function name_exist(Request $request)
+    {
+        return response()->json(!Department::where('name', ucwords($request->name))->exists());
     }
 }
