@@ -41,20 +41,26 @@ class ProjectLeadController extends Controller
      */
     public function store(Request $request)
     {
-        $projectLead = ProjectLead::create([
-            'name' => $request->name,
-            'fname' => $request->fname,
-            'gender' => $request->gender,
-            'address' => $request->address,
-            'project_id' => $request->project_id,
-            'rollno' => $request->rollno,
-            'department_id' => $request->department,
-            'cnic' => $request->cnic,
-            'contact_info' => $request->contact_info,
-            'status' => 1,
-            'user_id' => 1,
-            'email' => $request->email
-        ]);
+        if(ProjectLead::where('rollno',$request->rollno)->where('project_id',$request->project_id)->exists()){
+            return redirect()->back()->with('existing_project_id',"This Project ID is Already Registred In The Current Batch..");
+        }
+
+        else {
+            $projectLead = ProjectLead::create([
+                'name' => $request->name,
+                'fname' => $request->fname,
+                'gender' => $request->gender,
+                'address' => $request->address,
+                'project_id' => $request->project_id,
+                'rollno' => $request->rollno,
+                'department_id' => $request->department,
+                'cnic' => $request->cnic,
+                'contact_info' => $request->contact_info,
+                'status' => 1,
+                'user_id' => 1,
+                'email' => $request->email
+            ]);
+        }
 
         if ($projectLead) {
             return redirect()->route('project_leads.index')->with('project_lead_success', "Project Lead Created Successfully..");
@@ -135,5 +141,9 @@ class ProjectLeadController extends Controller
         $password = Str::random(8);
 
         ProjectLead::where('id', $projectLeadData)->update(['password' => $password]);
+    }
+
+    public function check_validity(Request $request){
+        return ProjectLead::where($request->column_name,$request->name)->exists();
     }
 }

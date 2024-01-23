@@ -541,6 +541,7 @@ class ComposerStaticInit9c491b8531eec05ba41a11d9276a5749
     public static $classMap = array (
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
+        'App\\Http\\Controllers\\AssignSupervisorController' => __DIR__ . '/../..' . '/app/Http/Controllers/AssignSupervisorController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\DepartmentController' => __DIR__ . '/../..' . '/app/Http/Controllers/DepartmentController.php',
         'App\\Http\\Controllers\\ProjectLeadController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProjectLeadController.php',
@@ -556,8 +557,10 @@ class ComposerStaticInit9c491b8531eec05ba41a11d9276a5749
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',
         'App\\Http\\Middleware\\ValidateSignature' => __DIR__ . '/../..' . '/app/Http/Middleware/ValidateSignature.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
+        'App\\Mail\\ProjectLeadRegistrationMail' => __DIR__ . '/../..' . '/app/Mail/ProjectLeadRegistrationMail.php',
         'App\\Mail\\SupervisorRegistrationMail' => __DIR__ . '/../..' . '/app/Mail/SupervisorRegistrationMail.php',
         'App\\Mail\\UserRegistrationMail' => __DIR__ . '/../..' . '/app/Mail/UserRegistrationMail.php',
+        'App\\Models\\AssignSupervisor' => __DIR__ . '/../..' . '/app/Models/AssignSupervisor.php',
         'App\\Models\\Department' => __DIR__ . '/../..' . '/app/Models/Department.php',
         'App\\Models\\FirstThesisSubmission' => __DIR__ . '/../..' . '/app/Models/FirstThesisSubmission.php',
         'App\\Models\\ProjectLead' => __DIR__ . '/../..' . '/app/Models/ProjectLead.php',

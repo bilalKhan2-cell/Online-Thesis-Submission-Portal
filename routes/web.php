@@ -23,5 +23,7 @@ Route::get('/supervisors/{id}/inactive', [SupervisorController::class, 'Inactive
 Route::get('/supervisors/{id}/activate', [SupervisorController::class, 'ActivateAccount'])->name('supervisors.active');
 
 Route::resource('project_leads',ProjectLeadController::class);
+Route::get('/check_valid',[ProjectLeadController::class,'check_validity'])->name('project_leads.check_validitiy');
 
 Route::resource('assign_supervisor',AssignSupervisorController::class);
+Route::get('/assign_supervisor/details',[AssignSupervisorController::class,'create'])->name('assign_supervisor.details');

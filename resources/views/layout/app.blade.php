@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Thesis Submission Systen - @yield('title')</title>
+    <title>{{ __('Thesis Submission System') }} - @yield('title')</title>
     <link rel="apple-touch-icon" href="app-assets/images/favicon/apple-touch-icon-152x152.png">
     <link rel="shortcut icon" type="image/x-icon" href="app-assets/images/favicon/favicon-32x32.png">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -20,7 +20,7 @@
 
     <style>
         .error {
-            color:#dc3545;
+            color: #dc3545;
         }
     </style>
 

@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\AssignSupervisor;
 use Illuminate\Http\Request;
-use App\Models\Department;
 use Yajra\DataTables\DataTables;
+use App\Models\Department;
+use App\Models\ProjectLead;
 
 class AssignSupervisorController extends Controller
 {
@@ -23,15 +24,29 @@ class AssignSupervisorController extends Controller
                 ->make(true);
         }
 
-        return view('admin.assignsupervisor.index',['deparment_list' => Department::all()]);
+        return view('admin.assignsupervisor.index', ['department_list' => Department::all()]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $details = [];
+        $team_and_supervisor_details = ProjectLead::where('department_id', $request->department_id)->get(['id']);
+
+        foreach ($team_and_supervisor_details as $key => $value) {
+            $assign_supervisor_data = AssignSupervisor::with('team', 'supervisor')->where('team_id', $value)->first();
+            array_push($details, $assign_supervisor_data);
+        }
+
+        return DataTables::of($details)
+               ->addIndexColumn()
+               ->addColumns('status',function($row){
+                    return "";
+               })
+               ->rawColumns(['action'])
+               ->make(true);
     }
 
     /**

@@ -8,11 +8,11 @@ function ShowAlertMessage($class, $content)
                 </div>
             </div>";
 }
-function InputField($colSize, $label, $options, $type, $value = '',$isDisabled=false)
+function InputField($colSize, $label, $options, $type, $value = '', $isDisabled = false)
 {
     $str_input = "<div class='col " . $colSize . "'>";
     $str_input .= "<label>" . $label . "</label>";
-    $str_input .= "<input type='" . $type . "' ".($isDisabled==true ? "disabled = 'disabled'" : "")." ";
+    $str_input .= "<input type='" . $type . "' " . ($isDisabled == true ? "disabled = 'disabled'" : "") . " ";
 
     foreach ($options as $key => $value) {
         $str_input .= " " . $key . "='" . $value . "'";
@@ -33,9 +33,9 @@ function SelectField($colSize, $label, $name, $collection, $key = '')
     foreach ($collection as $item) {
         $value = isset($item->name) ? $item->name : $item;
         $id = isset($item->id) ? $item->id : '';
-        $selectedOption = ($id==$key) ? "selected" : "";
+        $selectedOption = ($id == $key) ? "selected" : "";
 
-        $str_input .= "<option value='" . $id . "' ".$selectedOption.">" . $value . "</option>";
+        $str_input .= "<option value='" . $id . "' " . $selectedOption . ">" . $value . "</option>";
     }
 
     $str_input .= "</select>
@@ -81,4 +81,18 @@ function GenerateTable($tableID, $tableClass, $tableHeadings)
     $table .= "</table>";
 
     return $table;
+}
+
+function Button($label, $class, $options)
+{
+    $btnString = "<button type='button' class='".$class."'";
+
+    foreach ($options as $key => $value) {
+        $btnString .= " " . $key . "='" . $value . "'";
+    }
+
+    $btnString .= "/>".$label;
+    $btnString .= "</button>";
+
+    return $btnString;
 }

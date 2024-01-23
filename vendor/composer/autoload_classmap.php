@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
+    'App\\Http\\Controllers\\AssignSupervisorController' => $baseDir . '/app/Http/Controllers/AssignSupervisorController.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
     'App\\Http\\Controllers\\DepartmentController' => $baseDir . '/app/Http/Controllers/DepartmentController.php',
     'App\\Http\\Controllers\\ProjectLeadController' => $baseDir . '/app/Http/Controllers/ProjectLeadController.php',
@@ -23,8 +24,10 @@ return array(
     'App\\Http\\Middleware\\TrustProxies' => $baseDir . '/app/Http/Middleware/TrustProxies.php',
     'App\\Http\\Middleware\\ValidateSignature' => $baseDir . '/app/Http/Middleware/ValidateSignature.php',
     'App\\Http\\Middleware\\VerifyCsrfToken' => $baseDir . '/app/Http/Middleware/VerifyCsrfToken.php',
+    'App\\Mail\\ProjectLeadRegistrationMail' => $baseDir . '/app/Mail/ProjectLeadRegistrationMail.php',
     'App\\Mail\\SupervisorRegistrationMail' => $baseDir . '/app/Mail/SupervisorRegistrationMail.php',
     'App\\Mail\\UserRegistrationMail' => $baseDir . '/app/Mail/UserRegistrationMail.php',
+    'App\\Models\\AssignSupervisor' => $baseDir . '/app/Models/AssignSupervisor.php',
     'App\\Models\\Department' => $baseDir . '/app/Models/Department.php',
     'App\\Models\\FirstThesisSubmission' => $baseDir . '/app/Models/FirstThesisSubmission.php',
     'App\\Models\\ProjectLead' => $baseDir . '/app/Models/ProjectLead.php',
