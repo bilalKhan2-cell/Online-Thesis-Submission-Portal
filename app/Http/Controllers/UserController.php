@@ -6,6 +6,8 @@ use App\Mail\UserRegistrationMail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use App\Models\Department;
+use App\Models\Supervisor;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -13,6 +15,15 @@ class UserController extends Controller
 {
     private $genders = ['Male' => "Male", "Female" => "Female"];
     private $status = ['1' => "Active", '0' => "Inactive"];
+
+    public function dashboard(){
+        $counts = [];
+        $counts['departments'] = Department::all()->count();
+        $counts['supervisors'] = Supervisor::all()->count();
+
+        return view('admin.dashboard',['data' => $counts]);
+    }
+    
     public function index(Request $request)
     {
         if ($request->ajax()) {

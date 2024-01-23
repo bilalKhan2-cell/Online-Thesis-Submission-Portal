@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ProjectLeadRegistrationMail;
 use App\Models\Department;
 use App\Models\ProjectLead;
 use Illuminate\Http\Request;
@@ -17,8 +18,9 @@ class ProjectLeadController extends Controller
         if ($request->ajax()) {
             return DataTables::of(ProjectLead::with('department', 'users')->get())
                 ->addIndexColumn()
-                ->addColumn('status', function ($row) {
+                ->addColumn('action', function ($row) {
                     $btn = "<a href='" . route('project_leads.edit', $row->id) . "'><i class='material-icons'>edit</i></a>";
+                    $btn.="<a href='".route('team_members.manage',$row->id)."' id='".$row->id."' href='#modalTeamMembers'><i class='material-icons'>group_add</i></a>";
                     return $btn;
                 })
                 ->rawColumns(['action'])
@@ -41,11 +43,9 @@ class ProjectLeadController extends Controller
      */
     public function store(Request $request)
     {
-        if(ProjectLead::where('rollno',$request->rollno)->where('project_id',$request->project_id)->exists()){
-            return redirect()->back()->with('existing_project_id',"This Project ID is Already Registred In The Current Batch..");
-        }
-
-        else {
+        if (ProjectLead::where('rollno', $request->rollno)->where('project_id', $request->project_id)->exists()) {
+            return redirect()->back()->with('existing_project_id', "This Project ID is Already Registred In The Current Batch..");
+        } else {
             $projectLead = ProjectLead::create([
                 'name' => $request->name,
                 'fname' => $request->fname,
@@ -58,12 +58,15 @@ class ProjectLeadController extends Controller
                 'contact_info' => $request->contact_info,
                 'status' => 1,
                 'user_id' => 1,
-                'email' => $request->email
+                'email' => $request->email,
+                'batch' => $request->batch
             ]);
         }
 
         if ($projectLead) {
-            return redirect()->route('project_leads.index')->with('project_lead_success', "Project Lead Created Successfully..");
+            if ($this->SendEmail($request->email, $projectLead)) {
+                return redirect()->route('project_leads.index')->with('project_lead_success', "Project Lead Created Successfully..");
+            }
         }
     }
 
@@ -97,7 +100,8 @@ class ProjectLeadController extends Controller
             'rollno' => $request->rollno,
             'department_id' => $request->department,
             'contact_info' => $request->contact_info,
-            'user_id' => 1
+            'user_id' => 1,
+            'batch' => $request->batch
         ];
 
         if ($projectLead->status == 0) {
@@ -107,7 +111,9 @@ class ProjectLeadController extends Controller
 
         if (ProjectLead::where('id', $projectLead->id)->update($project_lead_new_data)) {
             if ($projectLead->status == 0) {
-                return redirect()->route('project_leads.index')->with('project_lead_edit_success', 'Project Lead Details Updated Successfully..');
+                if ($this->SendEmail($request->email, $projectLead)) {
+                    return redirect()->route('project_leads.index')->with('project_lead_edit_success', 'Project Lead Details Updated and Re-activation Email Sent Successfully.. ');
+                }
             } else {
                 return redirect()->route('project_leads.index')->with('project_lead_edit_success', 'Project Lead Details Updated Successfully..');
             }
@@ -140,10 +146,17 @@ class ProjectLeadController extends Controller
     {
         $password = Str::random(8);
 
-        ProjectLead::where('id', $projectLeadData)->update(['password' => $password]);
+        ProjectLead::where('id', $projectLeadData->id)->update(['password' => $password]);
+
+        $emailContent = view('emails.project_lead_registration',['password' => $password,'project_lead' => $projectLeadData])->render();
+
+        if(Mail::to($to)->send(new ProjectLeadRegistrationMail($emailContent))){
+            return true;
+        }
     }
 
-    public function check_validity(Request $request){
-        return ProjectLead::where($request->column_name,$request->name)->exists();
+    public function check_validity(Request $request)
+    {
+        return response()->json(!ProjectLead::where($request->column_name, $request->name)->exists());
     }
 }

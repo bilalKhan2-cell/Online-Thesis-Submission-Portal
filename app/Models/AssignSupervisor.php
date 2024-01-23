@@ -9,6 +9,8 @@ class AssignSupervisor extends Model
 {
     use HasFactory;
 
+    protected $table = "thesis";
+
     protected $fillable = [
         'team_id',
         'supervisor_id',
@@ -34,5 +36,9 @@ class AssignSupervisor extends Model
 
     public function setProjectTitleAttribute($value){
         return $this->attributes['project_title'] = ucwords($value);
+    }
+
+    public function projectLead(){
+        return $this->belongsTo(ProjectLead::class, 'team_id');
     }
 }

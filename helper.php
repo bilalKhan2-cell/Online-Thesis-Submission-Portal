@@ -77,7 +77,8 @@ function GenerateTable($tableID, $tableClass, $tableHeadings)
         $table .= "<th>" . $value . "</th>";
     }
     $table .= "</tr>
-    </thead>";
+    </thead>
+    <tbody></tbody>";
     $table .= "</table>";
 
     return $table;
@@ -85,13 +86,13 @@ function GenerateTable($tableID, $tableClass, $tableHeadings)
 
 function Button($label, $class, $options)
 {
-    $btnString = "<button type='button' class='".$class."'";
+    $btnString = "<button type='button' class='" . $class . "'";
 
     foreach ($options as $key => $value) {
         $btnString .= " " . $key . "='" . $value . "'";
     }
 
-    $btnString .= "/>".$label;
+    $btnString .= "/>" . $label;
     $btnString .= "</button>";
 
     return $btnString;

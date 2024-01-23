@@ -41,4 +41,10 @@ class ProjectLead extends Model
     {
         return $this->attributes['name'] = ucwords($value);
     }
+
+    public function assign_supervisor(){
+        return $this->hasOne(AssignSupervisor::class,'team_id','id');
+    }
+
+    protected $guard = "project_lead";
 }

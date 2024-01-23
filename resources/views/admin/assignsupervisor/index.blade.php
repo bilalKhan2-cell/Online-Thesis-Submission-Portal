@@ -9,77 +9,58 @@
 @endsection
 
 @section('content')
-    <form id="frmData">
+    @if (session()->has('success'))
+        {!! ShowAlertMessage('green', session()->get('success')) !!}
+    @endif
+
+    <form id="frmData" action="{{ route('assign_supervisor.details') }}" method="POST">
         @csrf
         <div class="row">
             {!! SelectField('s4', 'Select Department', 'department', $department_list) !!}
-            {!! Button('Submit', 'btn blue mt-3', ['onclick' => 'FetchData']) !!}
+            {!! InputField('s3', 'Enter Batch', ['name' => 'batch', 'id' => 'txtBatch', 'value' => old('batch')], 'number') !!}
+            {!! submitAndCancelButton('Submit', 'btn blue mt-', 'mt-2 s4') !!}
         </div>
     </form>
+
+    @error('batch')
+        <span class="red-text">{{ $message }}</span>
+    @enderror
+
     <br>
-    {!! GenerateTable('#tblData', 'table table-hover striped', [
-        'Team ID',
-        'Lead Name',
-        'Roll No.',
-        'Assigned Status',
-        'Action',
-    ]) !!}
+    @if (isset($assigning_supervisors_details))
+        <table class="table table-hover striped">
+            <thead>
+                <tr>
+                    <th>TEAM ID</th>
+                    <th>Project Lead Name</th>
+                    <th>Email</th>
+                    <th>Roll No</th>
+                    <th>Assigned Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($assigning_supervisors_details as $key => $value)
+                    <tr>
+                        <td>{{ $value->id }}</td>
+                        <td>{{ $value->name }} </td>
+                        <td>{{ $value->email }}</td>
+                        <td>{{ $value->rollno }}</td>
+                        <td>{!! $value->assign_supervisor == null
+                            ? "<span class='new badge warning'>Not Assigned</span>"
+                            : "<span class='new badge blue'>Assigned</span>" !!}</td>
+                        <td>
+                            <a href="{{ route('assign_supervisor.create', $value->id) }}" class="btn green"><i
+                                    class="material-icons">assignment_add</i></a>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
+
 @endsection
 
 @push('script')
-    <script>
-        function fetchData() {
-            $("#tblData").DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: "{{ route('assign_supervisor.details') }}",
-                    type: "GET",
-                    data: function(data) {
-                        data.department_id = $("select[name='department']").val();
-                    }
-                },
-                columns: [{
-                        data: "id",
-                        name: "id",
-                        render: function(result) {
-                            return "TEAM-" + result;
-                        },
-                    },
-                    {
-                        data: 'name',
-                        name: 'name',
-                        render:function(result){
-                            return result.name
-                        }
-                    },
-                    {
-                        data: 'rollno',
-                        name: 'rollno',
-                        render:function(result){
-                            return result.rollno
-                        }
-                    },
-                    {
-                        data: "supervisor",
-                        name: "supervisor",
-                        render: function(result) {
-                            if (result.name != '') {
-                                return "<span class='blue-text'>".result.name.
-                                "</span>";
-                            } else {
-                                return "<span class='badge red'>Not Assigned Yet.</span>";
-                            }
-                        }
-                    },
-                    {
-                        data:'action',
-                        name:'action',
-                        orderable:false,
-                        searchable:false
-                    }
-                ]
-            })
-        }
-    </script>
+    <script></script>
 @endpush

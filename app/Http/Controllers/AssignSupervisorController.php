@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AssignSupervisor;
+use App\Models\Supervisor;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Models\Department;
@@ -30,23 +31,14 @@ class AssignSupervisorController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request)
+    public function create(Request $request, $teamID)
     {
-        $details = [];
-        $team_and_supervisor_details = ProjectLead::where('department_id', $request->department_id)->get(['id']);
-
-        foreach ($team_and_supervisor_details as $key => $value) {
-            $assign_supervisor_data = AssignSupervisor::with('team', 'supervisor')->where('team_id', $value)->first();
-            array_push($details, $assign_supervisor_data);
+        if (!ProjectLead::where('id', $teamID)->exists()) {
+            return redirect()->back();
+        } else {
+            $supervisor_details = AssignSupervisor::with('supervisor')->where('team_id', $teamID)->exists() ? AssignSupervisor::with('supervisor')->where('team_id', $teamID)->first() : [];
+            return view('admin.assignsupervisor.assign', ['supervisor_list' => Supervisor::where('status', 1)->where('department_id',ProjectLead::find($teamID)->department_id)->get(), 'team_id' => $teamID, 'supervisor' => $supervisor_details->supervisor]);
         }
-
-        return DataTables::of($details)
-               ->addIndexColumn()
-               ->addColumns('status',function($row){
-                    return "";
-               })
-               ->rawColumns(['action'])
-               ->make(true);
     }
 
     /**
@@ -54,7 +46,19 @@ class AssignSupervisorController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if (AssignSupervisor::where('team_id', $request->team_id)->exists()) {
+            AssignSupervisor::where('team_id', $request->team_id)
+                ->update([
+                    'supervisor_id' => $request->supervisor_id
+                ]);
+            return redirect()->route('assign_supervisor.index')->with('success','Supervisor Assigned Successfully..');
+        } else {
+            AssignSupervisor::create([
+                'team_id' => $request->team_id,
+                'supervisor_id' => $request->supervisor_id
+            ]);
+            return redirect()->route('assign_supervisor.index')->with('success','Superivosr Updated Successfully..');
+        }
     }
 
     /**
@@ -87,5 +91,21 @@ class AssignSupervisorController extends Controller
     public function destroy(AssignSupervisor $assignSupervisor)
     {
         //
+    }
+
+    public function details(Request $request)
+    {
+        $request->validate([
+            'batch' => "required|numeric"
+        ]);
+        $teamIds = ProjectLead::where(['department_id' => $request->department, 'batch' => $request->batch])->get(['id']);
+
+        $data = [];
+
+        foreach ($teamIds as $key => $value) {
+            array_push($data, ProjectLead::with('assign_supervisor')->find($value->id)->first());
+        }
+
+        return view('admin.assignsupervisor.index', ['assigning_supervisors_details' => $data, 'department_list' => Department::all()]);
     }
 }

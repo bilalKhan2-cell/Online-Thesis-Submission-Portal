@@ -12,7 +12,7 @@
     @if (session()->has('existing_project_id'))
         <div class="row">
             <div class="col s12">
-                {!! ShowAlertMessage('warning', session()->get('existing_project_id')) !!}
+                {!! ShowAlertMessage('yellow', session()->get('existing_project_id')) !!}
             </div>
         </div>
     @endif
@@ -37,7 +37,9 @@
             {!! InputField('s4', 'Roll No.', ['name' => 'rollno', 'id' => 'txtRollNo'], 'text') !!}
 
             {!! InputField('s4', 'Contact Info', ['name' => 'contact_info', 'id' => 'txtContactInfo'], 'text') !!}
+        </div>
 
+        <div class="row mt-2">
             {!! InputField('s4', 'CNIC No.', ['name' => 'cnic', 'id' => 'txtCNIC'], 'text') !!}
 
             {!! SelectField('s4', 'Select Department', 'department', $departments, '') !!}
@@ -72,8 +74,12 @@
                         url: "{{ route('project_leads.check_validitiy') }}",
                         type: "GET",
                         data: {
-                            name: $("#txtCNIC").val(),
-                            column_name: "cnic"
+                            name: function(){
+                                return $("#txtCNIC").val()
+                            },
+                            column_name: function(){
+                                return 'cnic';
+                            }
                         }
                     }
                 },
@@ -83,8 +89,12 @@
                         url: "{{ route('project_leads.check_validitiy') }}",
                         type: "GET",
                         data: {
-                            name: $("#txtEmailAddress").val(),
-                            column_name: "email"
+                            name: function(){
+                                return $("#txtEmailAddress").val();
+                            },
+                            column_name: function(){
+                                return "email";
+                            }
                         }
                     }
                 },
@@ -94,8 +104,12 @@
                         url: "{{ route('project_leads.check_validitiy') }}",
                         type: "GET",
                         data: {
-                            name: $("#txtRollNo").val(),
-                            column_name: "rollno"
+                            name: function(){
+                                return $("#txtRollNo").val();
+                            },
+                            column_name: function(){
+                                return 'rollno';
+                            }
                         }
                     }
                 },
