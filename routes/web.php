@@ -11,11 +11,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('login');
 });
+
 Route::post('/login', [UserController::class, 'login'])->name('users.login');
 
 Route::middleware(['is_login'])->group(function () {
 
     Route::get('/admin/dashboard', [UserController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/admin/profile',[UserController::class,'profile'])->name('admin.profile');
 
     Route::resource('departments', DepartmentController::class);
     Route::post('/departments/name/unique', [DepartmentController::class, 'name_exist'])->name('departments.name.unique');
@@ -39,6 +41,15 @@ Route::middleware(['is_login'])->group(function () {
     Route::prefix('members')->group(function () {
         Route::get('/{id}/members', [TeamMemberController::class, 'manage_members'])->name('team_members.manage');
     });
+
     Route::get('/get_members', [TeamMemberController::class, 'get_members_by_team_id'])->name('team_members.get_members');
     Route::post('/add_member', [TeamMemberController::class, 'add_members'])->name('team_members.add_member');
+    Route::get('/delete_member/{id}',[TeamMemberController::class,'destroy'])->name('team_members.remove_member');
+
+    Route::get('/logout',[UserController::class,'logout'])->name('users.logout');
+
+    Route::prefix('team')->group(function(){
+        Route::get('/dashboard',[ProjectLeadController::class,'dashboard'])->name('team.dashboard');
+        Route::get('/upload_thesis',[ProjectLeadController::class,'show_upload_thesis'])->name('team.show_upload_thesis');
+    });
 });

@@ -17,8 +17,19 @@ class IsLogin
     public function handle(Request $request, Closure $next): Response
     {
         if(Auth::user()==null){
-            dd(12);
-            return redirect()->to('/');
+            if(Auth::guard('project_leads')->user()==null){
+                if(Auth::guard('supervisor')->user()==null){
+                    return redirect()->to('/');
+                }
+
+                else {
+                    return $next($request);
+                }
+            }
+
+            else {
+                return $next($request);
+            }
         }
 
         return $next($request);

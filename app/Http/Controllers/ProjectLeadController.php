@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Mail\ProjectLeadRegistrationMail;
+use App\Models\AssignSupervisor;
 use App\Models\Department;
 use App\Models\ProjectLead;
+use App\Models\TeamMember;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectLeadController extends Controller
 {
@@ -142,6 +145,13 @@ class ProjectLeadController extends Controller
         }
     }
 
+    public function dashboard(){
+        $supervisor_data = AssignSupervisor::with('supervisor')->where('team_id',Auth::guard('project_leads')->id())->first();
+        $team_members = TeamMember::where('team_id',Auth::guard('project_leads')->id())->get();
+
+        return view('projectlead.dashboard',['supervisor' => $supervisor_data,'members' => $team_members]);
+    }
+
     private function SendEmail($to, $projectLeadData)
     {
         $password = Str::random(8);
@@ -153,6 +163,10 @@ class ProjectLeadController extends Controller
         if(Mail::to($to)->send(new ProjectLeadRegistrationMail($emailContent))){
             return true;
         }
+    }
+
+    public function show_upload_thesis(){
+        return view('projectlead.upload_thesis');
     }
 
     public function check_validity(Request $request)

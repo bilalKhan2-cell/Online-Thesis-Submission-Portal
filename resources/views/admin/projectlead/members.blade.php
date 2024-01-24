@@ -9,6 +9,18 @@
 @endsection
 
 @section('content')
+    @if (session()->has('limit-exceeded'))
+        {!! ShowAlertMessage('red', session()->get('limit-exceeded')) !!}
+    @endif
+
+    @if (session()->has('already-exist'))
+        {!! ShowAlertMessage('red', session()->get('already-exist')) !!}
+    @endif
+
+    @if (session()->has('success'))
+        {!! ShowAlertMessage('green', session()->get('success')) !!}
+    @endif
+
     <form action="{{ route('team_members.add_member') }}" method="POST">
         @csrf
         <div class="row">
@@ -35,7 +47,8 @@
                     <td>{{ $value->name }}</td>
                     <td>{{ $value->rollno }}</td>
                     <td>
-                        <button class="btn red"><i class="material-icons">delete</i></button>
+                        <a href="{{ route('team_members.remove_member', $value->id) }}" class="btn red"><i
+                                class="material-icons">delete</i></a>
                     </td>
                 </tr>
             @endforeach

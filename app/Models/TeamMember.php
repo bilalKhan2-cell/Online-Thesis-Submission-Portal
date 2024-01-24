@@ -12,7 +12,7 @@ class TeamMember extends Model
 
     protected $fillable = ['name','rollno','user_id','team_id'];
 
-    protected function memeber_team(){
+    public function team(){
         return $this->belongsTo(ProjectLead::class,'team_id');
     }
 }

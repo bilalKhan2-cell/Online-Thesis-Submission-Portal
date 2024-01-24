@@ -24,7 +24,7 @@ class UserController extends Controller
             "password" => "required"
         ]);
 
-        $credentials = ['email' => $request->email, 'password' => bcrypt($request->password)];
+        $credentials = ['email' => $request->email, 'password' => ($request->password)];
 
         if(Auth::attempt($credentials)){
             return redirect()->route('admin.dashboard');
@@ -35,12 +35,16 @@ class UserController extends Controller
         }
 
         else if(Auth::guard('project_leads')->attempt($credentials)){
-
+            return redirect()->route('team.dashboard');
         }
 
         else {
             return redirect()->back()->with('invalid-error','Invalid Login Credentials..');
         }
+    }
+
+    public function profile(){
+        return view('admin.profile');
     }
 
     public function dashboard(){

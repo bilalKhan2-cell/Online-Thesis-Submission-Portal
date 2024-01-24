@@ -13,9 +13,9 @@
                 </ul>
                 <!-- profile-dropdown-->
                 <ul class="dropdown-content" id="profile-dropdown">
-                    <li><a class="grey-text text-darken-1" href="user-profile-page.html"><i
+                    <li><a class="grey-text text-darken-1" href="{{route('admin.profile')}}"><i
                                 class="material-icons">person_outline</i> Profile</a></li>
-                    <li><a class="grey-text text-darken-1" href="user-login.html"><i
+                    <li><a class="grey-text text-darken-1" href="{{route('users.logout')}}"><i
                                 class="material-icons">keyboard_tab</i> Logout</a></li>
                 </ul>
             </div>

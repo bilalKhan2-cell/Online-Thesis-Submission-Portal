@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\Department;
 use App\Models\User;
 
-class ProjectLead extends Model
+class ProjectLead extends Authenticatable
 {
     use HasFactory;
 

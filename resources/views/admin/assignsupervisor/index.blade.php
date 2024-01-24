@@ -42,7 +42,7 @@
             <tbody>
                 @foreach ($assigning_supervisors_details as $key => $value)
                     <tr>
-                        <td>{{ $value->id }}</td>
+                        <td>TEAM-{{ $value->id }}</td>
                         <td>{{ $value->name }} </td>
                         <td>{{ $value->email }}</td>
                         <td>{{ $value->rollno }}</td>
