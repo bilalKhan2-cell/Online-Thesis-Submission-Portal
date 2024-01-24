@@ -10,11 +10,38 @@ use App\Models\Department;
 use App\Models\Supervisor;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
     private $genders = ['Male' => "Male", "Female" => "Female"];
     private $status = ['1' => "Active", '0' => "Inactive"];
+
+    public function login(Request $request){
+        
+        $request->validate([
+            'email' => "required|email",
+            "password" => "required"
+        ]);
+
+        $credentials = ['email' => $request->email, 'password' => bcrypt($request->password)];
+
+        if(Auth::attempt($credentials)){
+            return redirect()->route('admin.dashboard');
+        }  
+
+        else if(Auth::guard('supervisor')->attempt($credentials)){
+
+        }
+
+        else if(Auth::guard('project_leads')->attempt($credentials)){
+
+        }
+
+        else {
+            return redirect()->back()->with('invalid-error','Invalid Login Credentials..');
+        }
+    }
 
     public function dashboard(){
         $counts = [];
@@ -133,6 +160,11 @@ class UserController extends Controller
         if ($data) {
             return redirect()->route('users.index')->with('user-inactive', 'User Account Marked Inactive..');
         }
+    }
+
+    public function logout(){
+        Auth::logout();
+        return redirect()->to('/');
     }
 
     private function SendMail($to, $user)
