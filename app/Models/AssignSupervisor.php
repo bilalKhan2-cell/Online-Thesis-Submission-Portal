@@ -20,6 +20,8 @@ class AssignSupervisor extends Model
         'is_edit_allowed',
         'is_marks_edit_allowed',
         'status',
+        'supervisor_comments',
+        'thesis_file'
     ];
 
     public function team(){

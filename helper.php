@@ -18,7 +18,7 @@ function InputField($colSize, $label, $options, $type, $value = '', $isDisabled 
         $str_input .= " " . $key . "='" . $value . "'";
     }
 
-    $str_input .= " />";
+    $str_input .= " value='".$value."' />";
     $str_input .= "</div>";
 
     return $str_input;
@@ -96,4 +96,20 @@ function Button($label, $class, $options)
     $btnString .= "</button>";
 
     return $btnString;
+}
+
+function TextArea($size, $lable, $options, $class, $val)
+{
+    $textareaString = "<div class='col " . $size . "'>";
+    $textareaString .= "<label>" . $lable . "</label>";
+    $textareaString .= "<textarea class='" . $class . "'";
+
+    foreach ($options as $key => $value) {
+        $textareaString .= " " . $key . "='" . $value . "'";
+    }
+
+    $textareaString .= ">" . $val . "</textarea>";
+    $textareaString .= "</div>";
+
+    return $textareaString;
 }

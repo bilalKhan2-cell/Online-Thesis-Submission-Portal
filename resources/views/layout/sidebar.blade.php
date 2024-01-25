@@ -43,7 +43,7 @@
 
         @if (Auth::guard('project_leads')->user())
             <li class="bold">
-                <a href="{{ route('team.show_upload_thesis') }}"
+                <a href="{{ route('team.dashboard') }}"
                     class="@if (Route::currentRouteName() == 'team.dashboard') active @endif waves-effect waves-cyan"><i
                         class="material-icons">dashboard</i> Dashboard</a>
             </li>
@@ -51,6 +51,16 @@
                 <a href="{{ route('team.show_upload_thesis') }}"
                     class="@if (Route::currentRouteName() == 'team.show_upload_thesis') active @endif waves-effect waves-cyan"><i
                         class="material-icons">upload_2</i> Upload Thesis</a>
+            </li>
+            <li class="bold">
+                <a href="{{ route('team.check_thesis_status') }}"
+                    class="@if (Route::currentRouteName() == 'team.check_thesis_status') active @endif waves-effect waves-cyan">
+                    <i class="material-icons">check_circle</i> Thesis Approval Status</a>
+            </li>
+            <li class="bold">
+                <a href="{{ route('team.thesis_grading') }}"
+                    class="@if (Route::currentRouteName() == 'team.thesis_grading') active @endif waves-effect waves-cyan"><i
+                        class="material-icons">checklist</i> Thesis Grading</a>
             </li>
         @endif
     </ul>

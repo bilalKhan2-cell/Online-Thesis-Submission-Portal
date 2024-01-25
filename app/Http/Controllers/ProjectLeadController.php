@@ -12,6 +12,7 @@ use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ProjectLeadController extends Controller
 {
@@ -23,7 +24,7 @@ class ProjectLeadController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $btn = "<a href='" . route('project_leads.edit', $row->id) . "'><i class='material-icons'>edit</i></a>";
-                    $btn.="<a href='".route('team_members.manage',$row->id)."' id='".$row->id."' href='#modalTeamMembers'><i class='material-icons'>group_add</i></a>";
+                    $btn .= "<a href='" . route('team_members.manage', $row->id) . "' id='" . $row->id . "' href='#modalTeamMembers'><i class='material-icons'>group_add</i></a>";
                     return $btn;
                 })
                 ->rawColumns(['action'])
@@ -145,11 +146,12 @@ class ProjectLeadController extends Controller
         }
     }
 
-    public function dashboard(){
-        $supervisor_data = AssignSupervisor::with('supervisor')->where('team_id',Auth::guard('project_leads')->id())->first();
-        $team_members = TeamMember::where('team_id',Auth::guard('project_leads')->id())->get();
+    public function dashboard()
+    {
+        $supervisor_data = AssignSupervisor::with('supervisor')->where('team_id', Auth::guard('project_leads')->id())->first();
+        $team_members = TeamMember::where('team_id', Auth::guard('project_leads')->id())->get();
 
-        return view('projectlead.dashboard',['supervisor' => $supervisor_data,'members' => $team_members]);
+        return view('projectlead.dashboard', ['supervisor' => $supervisor_data, 'members' => $team_members]);
     }
 
     private function SendEmail($to, $projectLeadData)
@@ -158,19 +160,66 @@ class ProjectLeadController extends Controller
 
         ProjectLead::where('id', $projectLeadData->id)->update(['password' => $password]);
 
-        $emailContent = view('emails.project_lead_registration',['password' => $password,'project_lead' => $projectLeadData])->render();
+        $emailContent = view('emails.project_lead_registration', ['password' => $password, 'project_lead' => $projectLeadData])->render();
 
-        if(Mail::to($to)->send(new ProjectLeadRegistrationMail($emailContent))){
+        if (Mail::to($to)->send(new ProjectLeadRegistrationMail($emailContent))) {
             return true;
         }
     }
 
-    public function show_upload_thesis(){
-        return view('projectlead.upload_thesis');
+    public function show_upload_thesis()
+    {
+        $status = true;
+        $uploading_status = AssignSupervisor::where('team_id', Auth::guard('project_leads')->user()->id)->exists();
+
+        if ($uploading_status) {
+            $thesis_data = AssignSupervisor::where('team_id', Auth::guard('project_leads')->user()->id)->first();
+            $status = $thesis_data->status == 1 ? false : true;
+        }
+
+        return view('projectlead.upload_thesis', ['status' => $status, 'thesis_data' => $thesis_data]);
     }
 
     public function check_validity(Request $request)
     {
         return response()->json(!ProjectLead::where($request->column_name, $request->name)->exists());
+    }
+
+    public function upload_thesis(Request $request)
+    {
+        $allowed_extensions = ['pdf', 'doc', 'docx'];
+        if (!in_array($request->file('thesis_file')->getClientOriginalExtension(), $allowed_extensions)) {
+            return redirect()->back()->withInput()->with('invalid_file_error', 'Only PDF Doc or Docx File Allowed.');
+        } else {
+            $thesis_file_path = Storage::url(($request->file('thesis_file')->store('thesis', 'public')));
+            $thesis_submition = new AssignSupervisor();
+
+            $thesis_submition->where('team_id', Auth::guard('project_leads')->user()->id)
+                ->update([
+                    'thesis_title' => $request->thesis_title,
+                    'thesis_description' => $request->thesis_description,
+                    'status' => 0,
+                    'is_edit_allowed' => 0,
+                    'is_marks_edit_allowed' => 0,
+                    'thesis_file' => $thesis_file_path
+                ]);
+
+            return redirect()->route('team.dashboard')->with('upload_success', "Thesis Submitted Successfully..");
+        }
+    }
+    public function check_thesis_status()
+    {
+        $thesis = AssignSupervisor::where('id',Auth::guard('project_leads')->user()->id)->first();
+        return view('projectlead.thesis_status',compact('thesis'));
+    }
+
+    public function thesis_grading()
+    {
+        return view('projectlead.marks');
+    }
+
+    public function profile()
+    {
+        return view('projectlead.profile');
     }
 }

@@ -50,6 +50,15 @@ Route::middleware(['is_login'])->group(function () {
 
     Route::prefix('team')->group(function(){
         Route::get('/dashboard',[ProjectLeadController::class,'dashboard'])->name('team.dashboard');
+        Route::get('/profile',[ProjectLeadController::class,'profile'])->name('team.profile');
         Route::get('/upload_thesis',[ProjectLeadController::class,'show_upload_thesis'])->name('team.show_upload_thesis');
+        Route::get('/check_thesis_status',[ProjectLeadController::class,'check_thesis_status'])->name('team.check_thesis_status');
+        Route::get('/thesis_grading',[ProjectLeadController::class,'thesis_grading'])->name("team.thesis_grading");
+
+        Route::post('/thesis/upload',[ProjectLeadController::class,'upload_thesis'])->name('team.upload_thesis');
+    });
+
+    Route::prefix('supervisor')->group(function(){
+        
     });
 });
