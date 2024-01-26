@@ -63,6 +63,19 @@
                         class="material-icons">checklist</i> Thesis Grading</a>
             </li>
         @endif
+
+        @if (Auth::guard('supervisor')->user())
+            <li class="bold">
+                <a href="{{ route('supervisor.dashboard') }}"
+                    class="@if (Route::currentRouteName() == 'supervisor.dashboard') active @endif waves-effect waves-cyan">
+                    <i class="material-icons">dashboard</i>
+                    Dashboard</a>
+            </li>
+            <li class="bold">
+                <a href="{{ route('supervisors.process_thesis') }}"><i class="material-icons">check</i>Manage
+                    Thesis</a>
+            </li>
+        @endif
     </ul>
     <div class="navigation-background"></div><a
         class="sidenav-trigger btn-sidenav-toggle btn-floating btn-medium waves-effect waves-light hide-on-large-only"

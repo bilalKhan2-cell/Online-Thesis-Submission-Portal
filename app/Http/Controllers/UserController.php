@@ -17,8 +17,22 @@ class UserController extends Controller
     private $genders = ['Male' => "Male", "Female" => "Female"];
     private $status = ['1' => "Active", '0' => "Inactive"];
 
-    public function login(Request $request){
-        
+    public function show_login()
+    {
+        if (Auth::guard('web')->check()) {
+            return redirect()->route('admin.dashboard');
+        } else if (Auth::guard('supervisor')->check()) {
+            return redirect()->route('supervisor.dashboard');
+        } else if (Auth::guard('project_leads')->check()) {
+            return redirect()->route('team.dashboard');
+        } else {
+            return view('login');
+        }
+    }
+
+    public function login(Request $request)
+    {
+
         $request->validate([
             'email' => "required|email",
             "password" => "required"
@@ -26,35 +40,31 @@ class UserController extends Controller
 
         $credentials = ['email' => $request->email, 'password' => ($request->password)];
 
-        if(Auth::attempt($credentials)){
+        if (Auth::attempt($credentials)) {
             return redirect()->route('admin.dashboard');
-        }  
-
-        else if(Auth::guard('supervisor')->attempt($credentials)){
-
-        }
-
-        else if(Auth::guard('project_leads')->attempt($credentials)){
+        } else if (Auth::guard('supervisor')->attempt($credentials)) {
+            return redirect()->route('supervisor.dashboard');
+        } else if (Auth::guard('project_leads')->attempt($credentials)) {
             return redirect()->route('team.dashboard');
-        }
-
-        else {
-            return redirect()->back()->with('invalid-error','Invalid Login Credentials..');
+        } else {
+            return redirect()->back()->with('invalid-error', 'Invalid Login Credentials..');
         }
     }
 
-    public function profile(){
+    public function profile()
+    {
         return view('admin.profile');
     }
 
-    public function dashboard(){
+    public function dashboard()
+    {
         $counts = [];
         $counts['departments'] = Department::all()->count();
         $counts['supervisors'] = Supervisor::all()->count();
 
-        return view('admin.dashboard',['data' => $counts]);
+        return view('admin.dashboard', ['data' => $counts]);
     }
-    
+
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -147,7 +157,7 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        
+
     }
 
     public function ActivateAccount($userID)
@@ -166,7 +176,8 @@ class UserController extends Controller
         }
     }
 
-    public function logout(){
+    public function logout()
+    {
         Auth::logout();
         return redirect()->to('/');
     }

@@ -191,6 +191,11 @@ class ProjectLeadController extends Controller
         if (!in_array($request->file('thesis_file')->getClientOriginalExtension(), $allowed_extensions)) {
             return redirect()->back()->withInput()->with('invalid_file_error', 'Only PDF Doc or Docx File Allowed.');
         } else {
+
+            if (!is_null(AssignSupervisor::where('team_id', Auth::guard('project_leads'))->first()->thesis_file)) {
+                Storage::delete(AssignSupervisor::where('team_id', Auth::guard('project_leads'))->first()->thesis_file);
+            }
+
             $thesis_file_path = Storage::url(($request->file('thesis_file')->store('thesis', 'public')));
             $thesis_submition = new AssignSupervisor();
 
@@ -209,27 +214,24 @@ class ProjectLeadController extends Controller
     }
     public function check_thesis_status()
     {
-        $thesis = AssignSupervisor::where('id',Auth::guard('project_leads')->user()->id)->first();
-        return view('projectlead.thesis_status',compact('thesis'));
+        $thesis = AssignSupervisor::where('id', Auth::guard('project_leads')->user()->id)->first();
+        return view('projectlead.thesis_status', compact('thesis'));
     }
 
     public function thesis_grading()
     {
         $status = 1;
         $marks = 0;
-        $thesis_detail = AssignSupervisor::where('teamn_id',Auth::guard('project_leads')->user()->id)->first();
-        if($thesis_detail->status == 0){
+        $thesis_detail = AssignSupervisor::where('team_id', Auth::guard('project_leads')->user()->id)->first();
+        if ($thesis_detail->status == 0) {
             $status = 0;
-        }
-
-        else if($thesis_detail->status==0 && $thesis_detail->marks==null || $thesis_detail->marks==0){
+        } else if ($thesis_detail->status == 0 && $thesis_detail->marks == null || $thesis_detail->marks == 0) {
             $status = 2;
-        }
-
-        else {
+        } else {
             $status = 3;
-            
-        return view('projectlead.marks',compact('status','thesis_detail'));
+
+        }
+        return view('projectlead.marks', compact('status', 'thesis_detail'));
     }
 
     public function profile()

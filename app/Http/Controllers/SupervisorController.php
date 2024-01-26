@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Mail\SupervisorRegistrationMail;
 use App\Models\Department;
+use App\Models\ProjectLead;
+use App\Models\AssignSupervisor;
 use App\Models\Supervisor;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class SupervisorController extends Controller
 {
@@ -67,25 +70,11 @@ class SupervisorController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Supervisor $supervisor)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Supervisor $supervisor)
     {
         return view('admin.supervisors.edit', ['status' => $this->status, 'data' => $supervisor, 'genders' => $this->genders, 'department_list' => Department::all()]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Supervisor $supervisor)
     {
         $updateData = [
@@ -136,6 +125,41 @@ class SupervisorController extends Controller
         }
     }
 
+    public function dashboard()
+    {
+        return view('supervisor.dashboard');
+    }
+
+    public function profile()
+    {
+        return view('supervisor.profile');
+    }
+
+    public function process_thesis(Request $request)
+    {
+        if ($request->ajax()) {
+            $batch = $request->batch;
+
+            $result = array();
+            $get_teams_by_batch = ProjectLead::where('batch', $batch)->get();
+
+            foreach ($get_teams_by_batch as $key => $value) {
+                if (AssignSupervisor::where(['team_id' => $value->id, 'supervisor_id' => Auth::guard('supervisor')->user()->id])->exists()) {
+                    array_push($result, AssignSupervisor::with('team')->where(['team_id' => $value->id, 'supervisor_id' => Auth::guard('supervisor')->user()->id])->first());
+                }
+            }
+
+            return response()->json(['result' => $result]);
+        } else {
+            return view('supervisor.manage_thesiss');
+        }
+    }
+
+    public function thesis_grading()
+    {
+        return true;
+    }
+
     private function SendEmail($to, $entity)
     {
         $password = Str::random(8);
@@ -145,7 +169,7 @@ class SupervisorController extends Controller
         $emailContent = view('emails.supervisor_registration', ['password' => $password, 'supervisor' => $entity])->render();
 
         if (Mail::to($to)->send(new SupervisorRegistrationMail($emailContent))) {
-            Supervisor::where('id',$entity->id)->update(['status' => 1]);
+            Supervisor::where('id', $entity->id)->update(['status' => 1]);
             return true;
         }
     }

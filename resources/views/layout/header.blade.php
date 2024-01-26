@@ -11,9 +11,8 @@
                                     src="{{asset("app-assets/images/avatar/avatar-7.png")}}"
                                     alt="avatar"><i></i></span></a></li>
                 </ul>
-                <!-- profile-dropdown-->
                 <ul class="dropdown-content" id="profile-dropdown">
-                    <li><a class="grey-text text-darken-1" href="@if(Auth::guard('web')->user()) {{route('admin.profile')}} @elseif (Auth::guard('project_leads')->user()) {{route('team.profile')}} @else {{route('admin.dashboard')}} @endif"><i
+                    <li><a class="grey-text text-darken-1" href="@if(Auth::guard('web')->user()) {{route('admin.profile')}} @elseif (Auth::guard('project_leads')->user()) {{route('team.profile')}} @else {{route('supervisor.profile')}} @endif"><i
                                 class="material-icons">person_outline</i> Profile</a></li>
                     <li><a class="grey-text text-darken-1" href="{{route('users.logout')}}"><i
                                 class="material-icons">keyboard_tab</i> Logout</a></li>
