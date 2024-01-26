@@ -43,4 +43,8 @@ class TeamMemberController extends Controller
             return redirect()->back()->with('success','Team Member Deleted Successfully..');
         }
     }
+
+    public function get_member_details(request $request){
+        return true;
+    }
 }
