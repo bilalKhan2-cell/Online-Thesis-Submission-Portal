@@ -215,7 +215,21 @@ class ProjectLeadController extends Controller
 
     public function thesis_grading()
     {
-        return view('projectlead.marks');
+        $status = 1;
+        $marks = 0;
+        $thesis_detail = AssignSupervisor::where('teamn_id',Auth::guard('project_leads')->user()->id)->first();
+        if($thesis_detail->status == 0){
+            $status = 0;
+        }
+
+        else if($thesis_detail->status==0 && $thesis_detail->marks==null || $thesis_detail->marks==0){
+            $status = 2;
+        }
+
+        else {
+            $status = 3;
+            
+        return view('projectlead.marks',compact('status','thesis_detail'));
     }
 
     public function profile()
