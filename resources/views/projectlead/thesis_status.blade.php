@@ -46,8 +46,13 @@
             <br>
             @if (!is_null($thesis))
                 @if ($thesis->status == 1)
-                    <i class="material-icons">edit</i>
-                    {!! InputField('s12', 'Comments', ['id' => 'txtSupervisorComments'], 'text', $thesis->supervisor_comments) !!}
+                    <div class="row">
+                        <div class="col s12 input-field">
+                            <i class="material-icons prefix">edit</i>
+                            <input id="name3" type="text" readonly value="{{ $thesis->supervisor_comments }}" />
+                            <label for="name3">Comments:</label>
+                        </div>
+                    </div>
                 @endif
             @endif
         </div>

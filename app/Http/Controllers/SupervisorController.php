@@ -157,6 +157,22 @@ class SupervisorController extends Controller
         return view('supervisor.manage_thesiss', ['details' => $result]);
     }
 
+    public function submit_reviews(Request $request, $thesisID)
+    {
+        $request->validate(['comments' => "required"]);
+        $action = $request->input('review');
+
+        if ($action == 'revert') {
+            AssignSupervisor::where('id', $thesisID)->update(['status' => '1', 'supervisor_comments' => $request->comments]);
+        }
+
+        else {
+            AssignSupervisor::where('id',$thesisID)->update(['status' => '2','supervisor_comments' => $request->comments]);
+        }
+
+        return redirect()->route('supervisors.process_thesis')->with("review_success",'Reviews Submitted Successfully..');
+    }
+
     public function thesis_grading()
     {
         return true;
@@ -167,11 +183,11 @@ class SupervisorController extends Controller
         if (!AssignSupervisor::where('id', $thesisID)->where('supervisor_id', Auth::guard('supervisor')->user()->id)->exists()) {
             return redirect()->back()->with('not_assigned_error', 'Unable To Process This Request..');
         }
-        
+
         $thesis_file = AssignSupervisor::find($thesisID)->thesis_file;
-        $thesis_file = Storage::disk('public')->get($thesis_file);
+        $thesis_file = (str_replace('/storage/', '', $thesis_file));
         // $thesis_file = Str::after($thesis_file,'/storage');
-        return view('supervisor.thesis_process', ['file' => $thesis_file,'thesis_data' => AssignSupervisor::with('team')->find($thesisID)]);
+        return view('supervisor.thesis_process', ['file' => $thesis_file, 'thesis_data' => AssignSupervisor::with('team')->find($thesisID)]);
     }
 
     private function SendEmail($to, $entity)

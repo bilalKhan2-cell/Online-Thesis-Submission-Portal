@@ -9,6 +9,10 @@
 @endsection
 
 @section('content')
+    @if (session()->has('review_success'))
+        {!! ShowAlertMessage('green', session()->get('review_success')) !!}
+    @endif
+
     <form action="{{ route('supervisors.manage_thesis_status') }}" method="POST">
         @csrf
         <div class="row">

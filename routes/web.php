@@ -69,7 +69,7 @@ Route::middleware(['is_login'])->group(function () {
             Route::get('/thesis/{id}/reviews',[SupervisorController::class,'reviewing_thesis'])->name('supervisors.review_thesis');
 
             Route::post('/thesis/list',[SupervisorController::class,'manage_thesis_status'])->name('supervisors.manage_thesis_status');
-            Route::post('/status/submit', [SupervisorController::class, ''])->name('supervisors.submit_reviews');
+            Route::post('/status/{id}/submit', [SupervisorController::class, 'submit_reviews'])->name('supervisors.submit_reviews');
         });
     });
 });

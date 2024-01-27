@@ -72,8 +72,11 @@
                     Dashboard</a>
             </li>
             <li class="bold">
-                <a href="{{ route('supervisors.process_thesis') }}"><i class="material-icons">check</i>Manage
+                <a href="{{ route('supervisors.process_thesis') }}" class="@if (Route::currentRouteName() == 'supervisor.process_thesis') active @endif waves-effect waves-cyan"><i class="material-icons">check</i>Manage
                     Thesis</a>
+            </li>
+            <li class="bold">
+                <a href="{{route('supervisors.thesis_grading')}}" class="@if (Route::currentRouteName() == 'supervisor.thesis_grading') active @endif waves-effect waves-cyan"><i class="material-icons">check_circle</i>Thesis Grading</a>
             </li>
         @endif
     </ul>
