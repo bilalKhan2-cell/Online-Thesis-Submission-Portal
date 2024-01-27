@@ -31,15 +31,20 @@ class AssignSupervisorController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request, $teamID)
+    public function create(Request $request)
     {
-        if (!ProjectLead::where('id', $teamID)->exists()) {
+        if (!ProjectLead::where('id', $request->teamID)->exists()) {
             return redirect()->back();
         } else {
-            $supervisor_details = AssignSupervisor::with('supervisor')->where('team_id', $teamID)->exists() ? AssignSupervisor::with('supervisor')->where('team_id', $teamID)->first() : [];
-            return view('admin.assignsupervisor.assign', ['supervisor_list' => Supervisor::where('status', 1)->where('department_id',ProjectLead::find($teamID)->department_id)->get(), 'team_id' => $teamID, 'supervisor' => $supervisor_details->supervisor]);
+            $supervisor_details = AssignSupervisor::with('supervisor')->where('team_id', $request->teamID)->first();
+    
+            return view('admin.assignsupervisor.assign', [
+                'supervisor_list' => Supervisor::where('status', 1)->where('department_id', ProjectLead::find($request->teamID)->department_id)->get(),
+                'team_id' => $request->teamID,
+                'supervisor' => $supervisor_details ? $supervisor_details->supervisor : null,
+            ]);
         }
-    }
+    }    
 
     /**
      * Store a newly created resource in storage.

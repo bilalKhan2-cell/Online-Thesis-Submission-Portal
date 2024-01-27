@@ -50,7 +50,7 @@
                             ? "<span class='new badge warning'>Not Assigned</span>"
                             : "<span class='new badge blue'>Assigned</span>" !!}</td>
                         <td>
-                            <a href="{{ route('assign_supervisor.create', $value->id) }}" class="btn green"><i
+                            <a href="{{ route('assign_supervisor.create', ['teamID' => $value->id]) }}" class="btn green"><i
                                     class="material-icons">assignment_add</i></a>
                         </td>
                     </tr>

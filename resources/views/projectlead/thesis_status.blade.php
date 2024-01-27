@@ -20,27 +20,35 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>{{ $thesis->thesis_title }}</td>
-                        <td><a href="{{ public_path($thesis->thesis_file) }}" download>Thesis File</a></td>
-                        <td>
-                            @if (is_null($thesis->status))
-                                <span class="purple-text">Thesis Submission Pending</span>
-                            @elseif($thesis->status == 0)
-                                <span class="blue-text">Thesis Status Pending From Supervisor</span>
-                            @elseif($thesis->status == 1)
-                                <span class="red-text">Thesis Reverted From Supervisor</span>
-                            @else
-                                <span class="green-text">Thesis Approved</span>
-                            @endif
-                        </td>
-                    </tr>
+                    @if (!is_null($thesis))
+                        <tr>
+                            <td>{{ $thesis->thesis_title }}</td>
+                            <td><a href="{{ public_path($thesis->thesis_file) }}" download>Thesis File</a></td>
+                            <td>
+                                @if (is_null($thesis->status))
+                                    <span class="purple-text">Thesis Submission Pending</span>
+                                @elseif($thesis->status == 0)
+                                    <span class="blue-text">Thesis Status Pending From Supervisor</span>
+                                @elseif($thesis->status == 1)
+                                    <span class="red-text">Thesis Reverted From Supervisor</span>
+                                @else
+                                    <span class="green-text">Thesis Approved</span>
+                                @endif
+                            </td>
+                        </tr>
+                    @else
+                        <tr>
+                            <td colspan="6" class="text-center">Supervisor Not Assigned Yet..</td>
+                        </tr>
+                    @endif
                 </tbody>
             </table>
             <br>
-            @if ($thesis->status == 1)
-                <i class="material-icons">edit</i>
-                {!! InputField('s12', 'Comments', ['id' => 'txtSupervisorComments'], 'text', $thesis->supervisor_comments) !!}
+            @if (!is_null($thesis))
+                @if ($thesis->status == 1)
+                    <i class="material-icons">edit</i>
+                    {!! InputField('s12', 'Comments', ['id' => 'txtSupervisorComments'], 'text', $thesis->supervisor_comments) !!}
+                @endif
             @endif
         </div>
     </div>

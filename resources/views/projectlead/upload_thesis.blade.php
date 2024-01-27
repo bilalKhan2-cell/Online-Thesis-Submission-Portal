@@ -17,11 +17,14 @@
     <form action="{{ route('team.upload_thesis') }}" id="frmThesis" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="row">
-            {!! InputField('s6', 'Thesis Title', ['name' => 'thesis_title'], 'text',$thesis_data->thesis_title) !!}
+            <div class="col s6">
+                <label>Thesis Title: </label>
+                <input type="text" name="thesis_title" />
+            </div>
         </div>
 
         <div class="row mt-1">
-            {!! TextArea('s12', 'Thesis Description', ['name' => 'thesis_description'], 'materialize-textarea', $thesis_data->thesis_description) !!}
+            {!! TextArea('s12', 'Thesis Description', ['name' => 'thesis_description'], 'materialize-textarea', isset($thesis_data->thesis_description) ? $thesis_data->thesis_description : "") !!}
 
             {!! InputField('s4', 'Thesis File', ['name' => 'thesis_file'], 'file') !!}
 

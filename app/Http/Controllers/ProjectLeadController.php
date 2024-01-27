@@ -169,12 +169,16 @@ class ProjectLeadController extends Controller
 
     public function show_upload_thesis()
     {
-        $status = true;
-        $uploading_status = AssignSupervisor::where('team_id', Auth::guard('project_leads')->user()->id)->exists();
+        $status = false;
 
-        if ($uploading_status) {
-            $thesis_data = AssignSupervisor::where('team_id', Auth::guard('project_leads')->user()->id)->first();
-            $status = $thesis_data->status == 1 ? false : true;
+        $thesis_data = AssignSupervisor::where('team_id', Auth::guard('project_leads')->user()->id)->first();
+
+        if (!empty($thesis_data)) {
+            $thesis_status = $thesis_data->status;
+
+            if (!is_null($thesis_status) && $thesis_status != 1) {
+                $status = true;
+            }
         }
 
         return view('projectlead.upload_thesis', ['status' => $status, 'thesis_data' => $thesis_data]);
@@ -222,14 +226,17 @@ class ProjectLeadController extends Controller
     {
         $status = 1;
         $marks = 0;
-        $thesis_detail = AssignSupervisor::where('team_id', Auth::guard('project_leads')->user()->id)->first();
-        if ($thesis_detail->status == 0) {
-            $status = 0;
-        } else if ($thesis_detail->status == 0 && $thesis_detail->marks == null || $thesis_detail->marks == 0) {
-            $status = 2;
+        $thesis_detail = AssignSupervisor::where('team_id', Auth::guard('project_leads')->user()->id)->exists();
+        if (!empty($thesis_detail)) {
+            if ($thesis_detail->status == 0) {
+                $status = 0;
+            } else if ($thesis_detail->status == 0 && $thesis_detail->marks == null || $thesis_detail->marks == 0) {
+                $status = 2;
+            } else {
+                $status = 3;
+            }
         } else {
-            $status = 3;
-
+            $thesis_detail = null;
         }
         return view('projectlead.marks', compact('status', 'thesis_detail'));
     }

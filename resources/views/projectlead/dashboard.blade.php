@@ -9,8 +9,8 @@
 @endsection
 
 @section('content')
-    @if(session()->has('upload_success'))
-        {!! ShowAlertMessage('green',session()->get('upload_success')) !!}
+    @if (session()->has('upload_success'))
+        {!! ShowAlertMessage('green', session()->get('upload_success')) !!}
     @endif
 
     <div class="row">
@@ -19,20 +19,30 @@
             <hr>
         </div>
         <div class="col s12">
-            <table class="table table-hover striped blue-text">
-                <thead>
-                    <tr>
-                        <td>Supervior Name</td>
-                        <td>{{ $supervisor->supervisor->name }}</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Email Address</td>
-                        <td>{{ $supervisor->supervisor->email }}</td>
-                    </tr>
-                </tbody>
-            </table>
+            @if (!is_null($supervisor))
+                <table class="table table-hover striped blue-text">
+                    <thead>
+                        <tr>
+                            <td>Supervior Name</td>
+                            <td>{{ $supervisor->supervisor->name }}</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Email Address</td>
+                            <td>{{ $supervisor->supervisor->email }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            @else
+                <table class="table table-hover striped red-text">
+                    <thead>
+                        <tr>
+                            <td>Supervior Not Assigned Yet.</td>
+                        </tr>
+                    </thead>
+                </table>
+            @endif
         </div>
     </div>
 

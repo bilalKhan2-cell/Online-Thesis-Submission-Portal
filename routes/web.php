@@ -36,7 +36,7 @@ Route::middleware(['is_login'])->group(function () {
 
         Route::resource('assign_supervisor', AssignSupervisorController::class);
         Route::post('/assign_supervisor/details', [AssignSupervisorController::class, 'details'])->name('assign_supervisor.details');
-        Route::get('/assign_supervisor/{id}/assign', [AssignSupervisorController::class, 'create'])->name('assign_supervisor.create');
+        // Route::get('/assign_supervisor/{id}/assign', [AssignSupervisorController::class, 'create'])->name('assign_supervisor.create');
 
         Route::prefix('members')->group(function () {
             Route::get('/{id}/members', [TeamMemberController::class, 'manage_members'])->name('team_members.manage');
@@ -64,9 +64,11 @@ Route::middleware(['is_login'])->group(function () {
         Route::prefix('supervisor')->group(function () {
             Route::get('/dashboard', [SupervisorController::class, 'dashboard'])->name('supervisor.dashboard');
             Route::get('/profile', [SupervisorController::class, 'profile'])->name('supervisor.profile');
-            Route::get('/process_thesis',[SupervisorController::class,'process_thesis'])->name('supervisors.process_thesis');
+            Route::get('/list_thesis',[SupervisorController::class,'process_thesis'])->name('supervisors.process_thesis');
             Route::get('/thesis_grading', [SupervisorController::class, 'thesis_grading'])->name('supervisors.thesis_grading');
+            Route::get('/thesis/{id}/reviews',[SupervisorController::class,'reviewing_thesis'])->name('supervisors.review_thesis');
 
+            Route::post('/thesis/list',[SupervisorController::class,'manage_thesis_status'])->name('supervisors.manage_thesis_status');
             Route::post('/status/submit', [SupervisorController::class, ''])->name('supervisors.submit_reviews');
         });
     });

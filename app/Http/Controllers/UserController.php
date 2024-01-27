@@ -178,7 +178,9 @@ class UserController extends Controller
 
     public function logout()
     {
-        Auth::logout();
+        Auth::guard('web')->logout();
+        Auth::guard('supervisor')->logout();
+        Auth::guard('project_leads')->logout();
         return redirect()->to('/');
     }
 

@@ -9,6 +9,7 @@ use App\Models\AssignSupervisor;
 use App\Models\Supervisor;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
@@ -135,29 +136,42 @@ class SupervisorController extends Controller
         return view('supervisor.profile');
     }
 
-    public function process_thesis(Request $request)
+    public function process_thesis()
     {
-        if ($request->ajax()) {
-            $batch = $request->batch;
+        return view('supervisor.manage_thesiss');
+    }
 
-            $result = array();
-            $get_teams_by_batch = ProjectLead::where('batch', $batch)->get();
+    public function manage_thesis_status(Request $request)
+    {
+        $batch = $request->batch;
 
-            foreach ($get_teams_by_batch as $key => $value) {
-                if (AssignSupervisor::where(['team_id' => $value->id, 'supervisor_id' => Auth::guard('supervisor')->user()->id])->exists()) {
-                    array_push($result, AssignSupervisor::with('team')->where(['team_id' => $value->id, 'supervisor_id' => Auth::guard('supervisor')->user()->id])->first());
-                }
+        $result = array();
+        $get_teams_by_batch = ProjectLead::where('batch', $batch)->get();
+
+        foreach ($get_teams_by_batch as $key => $value) {
+            if (AssignSupervisor::where(['team_id' => $value->id, 'supervisor_id' => Auth::guard('supervisor')->user()->id])->exists()) {
+                array_push($result, AssignSupervisor::with('team')->where(['team_id' => $value->id, 'supervisor_id' => Auth::guard('supervisor')->user()->id])->first());
             }
-
-            return response()->json(['result' => $result]);
-        } else {
-            return view('supervisor.manage_thesiss');
         }
+
+        return view('supervisor.manage_thesiss', ['details' => $result]);
     }
 
     public function thesis_grading()
     {
         return true;
+    }
+
+    public function reviewing_thesis($thesisID)
+    {
+        if (!AssignSupervisor::where('id', $thesisID)->where('supervisor_id', Auth::guard('supervisor')->user()->id)->exists()) {
+            return redirect()->back()->with('not_assigned_error', 'Unable To Process This Request..');
+        }
+        
+        $thesis_file = AssignSupervisor::find($thesisID)->thesis_file;
+        $thesis_file = Storage::disk('public')->get($thesis_file);
+        // $thesis_file = Str::after($thesis_file,'/storage');
+        return view('supervisor.thesis_process', ['file' => $thesis_file,'thesis_data' => AssignSupervisor::with('team')->find($thesisID)]);
     }
 
     private function SendEmail($to, $entity)

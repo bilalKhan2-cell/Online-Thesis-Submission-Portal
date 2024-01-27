@@ -20,6 +20,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @if(!is_null($thesis_detail))
                     <tr>
                         <td>TEAM-{{$thesis_detail->team_id}}</td>
                         <td>{{$thesis_detail->thesis_title}}</td>
@@ -33,6 +34,11 @@
                             @endif
                         </td>
                     </tr>
+                    @else  
+                        <tr>
+                            <td colspan="6">Can't Process Thesis Now..</td>
+                        </tr>
+                    @endif
                 </tbody>
             </table>
         </div>
