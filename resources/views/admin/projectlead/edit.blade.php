@@ -8,15 +8,8 @@
     <x-breadcrumbs heading="Project Lead" subHeading="Manage Project Lead Data" page="Update Project Lead" />
 @endsection
 
-@section('content')
-    @extends('layout.app')
-
 @section('title')
     Edit Project Lead Details
-@endsection
-
-@section('breadcrumbs')
-    <x-breadcrumbs heading="Project Lead" subHeading="Manage Project Lead Data" page="Register Project Lead" />
 @endsection
 
 @section('content')
@@ -48,7 +41,7 @@
 
             {!! InputField('s4', 'CNIC No.', ['name' => 'cnic', 'id' => 'txtCNIC', 'value' => $data->cnic], 'text') !!}
 
-            {!! SelectField('s4', 'Select Department', 'department', $departments, $$data->department->id) !!}
+            {!! SelectField('s4', 'Select Department', 'department', $departments, $data->department->id) !!}
 
             {!! InputField(
                 's12',

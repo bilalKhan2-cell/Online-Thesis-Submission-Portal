@@ -43,14 +43,20 @@ class UserController extends Controller
         $credentials = ['email' => $request->email, 'password' => ($request->password)];
 
         if (Auth::attempt($credentials)) {
+            if (Auth::guard('web')->user()->status == 0) {
+                Auth::guard('web')->logout();
+                return redirect()->back()->with('login-inactive', 'Your Account Have Marked Inactive From The Administration Department..');
+            }
             return redirect()->route('admin.dashboard');
         } else if (Auth::guard('supervisor')->attempt($credentials)) {
             if (Auth::guard('supervisor')->user()->status == 0) {
+                Auth::guard('supervisor')->logout();
                 return redirect()->back()->with('login-inactive', 'Your Account Have Marked Inactive From The Administration Department..');
             }
             return redirect()->route('supervisor.dashboard');
         } else if (Auth::guard('project_leads')->attempt($credentials)) {
             if (Auth::guard('project_leads')->user()->status == 0) {
+                Auth::guard('project_leads')->logout();
                 return redirect()->back()->with('login-inactive', 'Your Account Have Marked Inactive From The Administration Department..');
             }
             return redirect()->route('team.dashboard');
