@@ -67,9 +67,12 @@ Route::middleware(['is_login'])->group(function () {
             Route::get('/list_thesis',[SupervisorController::class,'process_thesis'])->name('supervisors.process_thesis');
             Route::get('/thesis_grading', [SupervisorController::class, 'thesis_grading'])->name('supervisors.thesis_grading');
             Route::get('/thesis/{id}/reviews',[SupervisorController::class,'reviewing_thesis'])->name('supervisors.review_thesis');
+            Route::get('/marks/fetch',[SupervisorController::class,'get_marks'])->name('supervisors.get_marks');
 
             Route::post('/thesis/list',[SupervisorController::class,'manage_thesis_status'])->name('supervisors.manage_thesis_status');
             Route::post('/status/{id}/submit', [SupervisorController::class, 'submit_reviews'])->name('supervisors.submit_reviews');
+            Route::post('/fetch_marks',[SupervisorController::class,'fetch_marks'])->name('supervisors.fetch_marks');
+            Route::post('/submit_marks',[SupervisorController::class,'submit_marks'])->name('supervisors.submit_marks');
         });
     });
 });

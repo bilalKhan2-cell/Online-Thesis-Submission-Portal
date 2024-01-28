@@ -149,8 +149,13 @@ class SupervisorController extends Controller
         $get_teams_by_batch = ProjectLead::where('batch', $batch)->get();
 
         foreach ($get_teams_by_batch as $key => $value) {
-            if (AssignSupervisor::where(['team_id' => $value->id, 'supervisor_id' => Auth::guard('supervisor')->user()->id])->exists()) {
-                array_push($result, AssignSupervisor::with('team')->where(['team_id' => $value->id, 'supervisor_id' => Auth::guard('supervisor')->user()->id])->first());
+            $resultItem = AssignSupervisor::with('team')
+                ->where(['team_id' => $value->id, 'supervisor_id' => Auth::guard('supervisor')->user()->id])
+                ->where('status', '!=', 2)
+                ->first();
+
+            if ($resultItem !== null) {
+                array_push($result, $resultItem);
             }
         }
 
@@ -164,18 +169,16 @@ class SupervisorController extends Controller
 
         if ($action == 'revert') {
             AssignSupervisor::where('id', $thesisID)->update(['status' => '1', 'supervisor_comments' => $request->comments]);
+        } else {
+            AssignSupervisor::where('id', $thesisID)->update(['status' => '2', 'supervisor_comments' => $request->comments]);
         }
 
-        else {
-            AssignSupervisor::where('id',$thesisID)->update(['status' => '2','supervisor_comments' => $request->comments]);
-        }
-
-        return redirect()->route('supervisors.process_thesis')->with("review_success",'Reviews Submitted Successfully..');
+        return redirect()->route('supervisors.process_thesis')->with("review_success", 'Reviews Submitted Successfully..');
     }
 
     public function thesis_grading()
     {
-        return true;
+        return view('supervisor.marks_assign');
     }
 
     public function reviewing_thesis($thesisID)
@@ -185,9 +188,53 @@ class SupervisorController extends Controller
         }
 
         $thesis_file = AssignSupervisor::find($thesisID)->thesis_file;
-        $thesis_file = (str_replace('/storage/', '', $thesis_file));
-        // $thesis_file = Str::after($thesis_file,'/storage');
-        return view('supervisor.thesis_process', ['file' => $thesis_file, 'thesis_data' => AssignSupervisor::with('team')->find($thesisID)]);
+        $thesis_file = asset($thesis_file);
+
+        return view('supervisor.thesis_process', [
+            'file' => $thesis_file,
+            'thesis_data' => AssignSupervisor::with('team')->find($thesisID)
+        ]);
+    }
+
+    public function fetch_marks(Request $request)
+    {
+        $batch = $request->batch;
+
+        $result = array();
+        $get_teams_by_batch = ProjectLead::where('batch', $batch)->get();
+
+        foreach ($get_teams_by_batch as $key => $value) {
+            if (AssignSupervisor::where(['team_id' => $value->id, 'supervisor_id' => Auth::guard('supervisor')->user()->id])->exists()) {
+                $resultItem = AssignSupervisor::with('team')
+                    ->where(['team_id' => $value->id, 'supervisor_id' => Auth::guard('supervisor')->user()->id])
+                    ->where('status', '=', 2)
+                    ->first();
+
+                if ($resultItem !== null) {
+                    array_push($result, $resultItem);
+                }
+            }
+        }
+
+        return view('supervisor.marks_assign', compact('result'));
+    }
+
+    public function get_marks(Request $request)
+    {
+        return response()->json(['result' => AssignSupervisor::find($request->id)]);
+    }
+
+    public function submit_marks(Request $request)
+    {
+        $is_edit_allowed = AssignSupervisor::find($request->id);
+
+        if ($is_edit_allowed->is_marks_edit_allowed < 2) {
+            if (AssignSupervisor::where('id', $request->id)->update(['marks' => $request->marks, 'is_marks_edit_allowed' => $is_edit_allowed->status + 1])) {
+                return response()->json(['success' => 1]);
+            }
+        } else {
+            return response()->json(['success' => 0]);
+        }
     }
 
     private function SendEmail($to, $entity)

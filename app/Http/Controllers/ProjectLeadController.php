@@ -171,7 +171,7 @@ class ProjectLeadController extends Controller
     {
         $status = false;
 
-        $thesis_data = AssignSupervisor::where('team_id', Auth::guard('project_leads')->user()->id)->first();
+        $thesis_data = AssignSupervisor::with('supervisor')->where('team_id', Auth::guard('project_leads')->user()->id)->first();
 
         if (!empty($thesis_data)) {
             $thesis_status = $thesis_data->status;
@@ -196,8 +196,10 @@ class ProjectLeadController extends Controller
             return redirect()->back()->withInput()->with('invalid_file_error', 'Only PDF Doc or Docx File Allowed.');
         } else {
 
-            if (!is_null(AssignSupervisor::where('team_id', Auth::guard('project_leads')->user()->id)->first()->thesis_file)) {
-                Storage::delete(AssignSupervisor::where('team_id', Auth::guard('project_leads')->user()->id)->first()->thesis_file);
+            $assignment = AssignSupervisor::where('team_id', Auth::guard('project_leads')->user()->id)->first();
+            $filePath = str_replace('/storage/', 'public/', $assignment->thesis_file);
+            if (Storage::exists($filePath)) {
+                Storage::delete($filePath);
             }
 
             $thesis_file_path = Storage::url(($request->file('thesis_file')->store('thesis', 'public')));
@@ -216,6 +218,7 @@ class ProjectLeadController extends Controller
             return redirect()->route('team.dashboard')->with('upload_success', "Thesis Submitted Successfully..");
         }
     }
+
     public function check_thesis_status()
     {
         $thesis = AssignSupervisor::where('id', Auth::guard('project_leads')->user()->id)->first();

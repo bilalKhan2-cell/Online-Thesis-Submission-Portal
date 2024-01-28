@@ -20,7 +20,8 @@
             <button type="submit" class="btn mt-3 blue">Submit</button>
         </div>
     </form>
-    @if (isset($details))
+
+    @if (isset($details) || !count($details)==0)
         <br>
         <div class="row">
             <div class="col s12">
@@ -43,10 +44,12 @@
                                 <td>{{ $value->team->name }}</td>
                                 <td>{{ $value->team->rollno }}</td>
                                 <td>
-                                    @if ($value->status == 0)
-                                        <span class="purple-text">Un Processed</span>
+                                    @if(is_null($value->thesis_title))
+                                        <span class="red-text">Thesis Not Uploaded Yet.</span>
                                     @elseif ($value->status == 1)
                                         <span class="red-text">Reverted</span>
+                                    @elseif(!is_null($value->thesis_title) && $value->status==0)
+                                        <span class="red-text">Un-Processed</span>
                                     @endif
                                 </td>
                                 <td>

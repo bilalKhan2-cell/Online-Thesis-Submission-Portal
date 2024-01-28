@@ -23,7 +23,7 @@
                     @if (!is_null($thesis))
                         <tr>
                             <td>{{ $thesis->thesis_title }}</td>
-                            <td><a href="{{ public_path($thesis->thesis_file) }}" download>Thesis File</a></td>
+                            <td><a href="{{ asset($thesis->thesis_file) }}" download>Thesis File</a></td>
                             <td>
                                 @if (is_null($thesis->status))
                                     <span class="purple-text">Thesis Submission Pending</span>

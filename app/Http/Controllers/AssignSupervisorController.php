@@ -37,14 +37,14 @@ class AssignSupervisorController extends Controller
             return redirect()->back();
         } else {
             $supervisor_details = AssignSupervisor::with('supervisor')->where('team_id', $request->teamID)->first();
-    
+
             return view('admin.assignsupervisor.assign', [
                 'supervisor_list' => Supervisor::where('status', 1)->where('department_id', ProjectLead::find($request->teamID)->department_id)->get(),
                 'team_id' => $request->teamID,
                 'supervisor' => $supervisor_details ? $supervisor_details->supervisor : null,
             ]);
         }
-    }    
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -56,13 +56,13 @@ class AssignSupervisorController extends Controller
                 ->update([
                     'supervisor_id' => $request->supervisor_id
                 ]);
-            return redirect()->route('assign_supervisor.index')->with('success','Supervisor Assigned Successfully..');
+            return redirect()->route('assign_supervisor.index')->with('success', 'Supervisor Assigned Successfully..');
         } else {
             AssignSupervisor::create([
                 'team_id' => $request->team_id,
                 'supervisor_id' => $request->supervisor_id
             ]);
-            return redirect()->route('assign_supervisor.index')->with('success','Superivosr Updated Successfully..');
+            return redirect()->route('assign_supervisor.index')->with('success', 'Superivosr Assigned Successfully..');
         }
     }
 

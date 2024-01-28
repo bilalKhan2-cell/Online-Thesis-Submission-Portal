@@ -8,14 +8,15 @@ function ShowAlertMessage($class, $content)
                 </div>
             </div>";
 }
+
 function InputField($colSize, $label, $options, $type, $value = '', $isDisabled = false)
 {
     $str_input = "<div class='col " . $colSize . "'>";
     $str_input .= "<label>" . $label . "</label>";
     $str_input .= "<input type='" . $type . "' " . ($isDisabled == true ? "disabled = 'disabled'" : "") . " ";
 
-    foreach ($options as $key => $value) {
-        $str_input .= " " . $key . "='" . $value . "'";
+    foreach ($options as $optionKey => $optionValue) {
+        $str_input .= " " . $optionKey . "='" . $optionValue . "'";
     }
 
     $str_input .= " value='".$value."' />";
@@ -23,6 +24,7 @@ function InputField($colSize, $label, $options, $type, $value = '', $isDisabled 
 
     return $str_input;
 }
+
 
 function SelectField($colSize, $label, $name, $collection, $key = '')
 {
