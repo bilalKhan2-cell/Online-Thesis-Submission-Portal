@@ -35,11 +35,11 @@
                             {!! ShowAlertMessage('red', session()->get('login-inactive')) !!}
                         @endif
 
-                        <form class="login-form" method="POST" action="{{ route('users.login') }}">
+                        <form class="login-form" method="POST" action="{{ route('users.sendotp') }}">
                             @csrf
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <h5 class="ml-4">Sign in</h5>
+                                    <h5 class="ml-4">Forgot Password</h5>
                                 </div>
                             </div>
                             <div class="row margin">
@@ -52,26 +52,10 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="row margin">
-                                <div class="input-field col s12">
-                                    <i class="material-icons prefix pt-2">lock_outline</i>
-                                    <input id="password" name="password" type="password">
-                                    <label for="password">Password</label>
-                                    @error('password')
-                                        <span class="red-text">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div>
                             <div class="row">
                                 <div class="input-field col s12">
                                     <button type="submit"
-                                        class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col s12">Login</button>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="input-field col s6 m6 l6">
-                                    <p class="margin medium-small"><a href="{{ route('users.forgot') }}">Forgot
-                                            Password</a></p>
+                                        class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col s12">Submit</button>
                                 </div>
                             </div>
                         </form>

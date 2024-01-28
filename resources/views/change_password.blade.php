@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
-    <title>Thesis Submission System - Login</title>
+    <title>Thesis Submission System - Change Password</title>
     <link rel="apple-touch-icon" href="app-assets/images/favicon/apple-touch-icon-152x152.png">
     <link rel="shortcut icon" type="image/x-icon" href="app-assets/images/favicon/favicon-32x32.png">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -39,14 +39,24 @@
                             @csrf
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <h5 class="ml-4">Sign in</h5>
+                                    <h5 class="ml-4">Change Password</h5>
                                 </div>
                             </div>
                             <div class="row margin">
                                 <div class="input-field col s12">
                                     <i class="material-icons prefix pt-2">person_outline</i>
-                                    <input id="username" type="email" name="email" />
-                                    <label for="username" class="center-align">Email</label>
+                                    <input id="username" type="text" name="verification_code" />
+                                    <label for="username" class="center-align">Verification Code</label>
+                                    @error('code')
+                                        <span class="red-text">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row margin">
+                                <div class="input-field col s12">
+                                    <i class="material-icons prefix pt-2">person_outline</i>
+                                    <input id="username" type="password" name="password" />
+                                    <label for="username" class="center-align">Password</label>
                                     @error('email')
                                         <span class="red-text">{{ $message }}</span>
                                     @enderror
@@ -54,10 +64,10 @@
                             </div>
                             <div class="row margin">
                                 <div class="input-field col s12">
-                                    <i class="material-icons prefix pt-2">lock_outline</i>
-                                    <input id="password" name="password" type="password">
-                                    <label for="password">Password</label>
-                                    @error('password')
+                                    <i class="material-icons prefix pt-2">person_outline</i>
+                                    <input id="username" type="password" name="password" />
+                                    <label for="username" class="center-align">Password</label>
+                                    @error('email')
                                         <span class="red-text">{{ $message }}</span>
                                     @enderror
                                 </div>
@@ -65,13 +75,7 @@
                             <div class="row">
                                 <div class="input-field col s12">
                                     <button type="submit"
-                                        class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col s12">Login</button>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="input-field col s6 m6 l6">
-                                    <p class="margin medium-small"><a href="{{ route('users.forgot') }}">Forgot
-                                            Password</a></p>
+                                        class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col s12">Submit</button>
                                 </div>
                             </div>
                         </form>

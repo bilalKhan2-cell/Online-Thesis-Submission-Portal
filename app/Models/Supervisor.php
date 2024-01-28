@@ -23,7 +23,8 @@ class Supervisor extends Authenticatable
         'user_id',
         'password',
         'department_id',
-        "status"
+        "status",
+        "password_reset_code"
     ];
 
     public function setNameAttribute($value){

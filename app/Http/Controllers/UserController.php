@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ForgotPasswordMail;
 use App\Mail\UserRegistrationMail;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -11,6 +12,7 @@ use App\Models\Supervisor;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use App\Models\ProjectLead;
 
 class UserController extends Controller
 {
@@ -43,8 +45,14 @@ class UserController extends Controller
         if (Auth::attempt($credentials)) {
             return redirect()->route('admin.dashboard');
         } else if (Auth::guard('supervisor')->attempt($credentials)) {
+            if (Auth::guard('supervisor')->user()->status == 0) {
+                return redirect()->back()->with('login-inactive', 'Your Account Have Marked Inactive From The Administration Department..');
+            }
             return redirect()->route('supervisor.dashboard');
         } else if (Auth::guard('project_leads')->attempt($credentials)) {
+            if (Auth::guard('project_leads')->user()->status == 0) {
+                return redirect()->back()->with('login-inactive', 'Your Account Have Marked Inactive From The Administration Department..');
+            }
             return redirect()->route('team.dashboard');
         } else {
             return redirect()->back()->with('invalid-error', 'Invalid Login Credentials..');
@@ -184,6 +192,64 @@ class UserController extends Controller
         return redirect()->to('/');
     }
 
+    public function show_forgot_password_page()
+    {
+        return view('forgot');
+    }
+
+    public function send_otp(Request $request)
+    {
+        $email = $request->email;
+
+        if (Auth::guard('web')->attempt(['email' => $email])) {
+            $this->SendForgotPasswordMail($email, Auth::guard('web')->user(), 'user');
+            session()->put('change_password', 'user');
+            session()->put('email', $email);
+        } else if (Auth::guard('supervisor')->attempt(['email' => $email])) {
+            $this->SendForgotPasswordMail($email, Auth::guard('supervisor')->user(), 'supervisor');
+            session()->put('change_password', 'supervisor');
+            session()->put('email', $email);
+        } else if (Auth::guard('project_leads')->attempt(['email' => $email])) {
+            $this->SendForgotPasswordMail($email, Auth::guard('project_leads')->user(), 'project_lead');
+            session()->put('change_password', 'project_lead');
+            session()->put('email', $email);
+        } else {
+            return redirect()->back()->with('invalid_login', 'Account Not Exist..');
+        }
+
+        return redirect();
+    }
+
+    public function show_change_password_page()
+    {
+        return view('change_password');
+    }
+
+    public function update_password(Request $request)
+    {
+        $request->validate([
+            'password' => "required|min:6",
+            "confirm_password" => "required|same:password",
+            "code" => "required"
+        ]);
+
+        if (session()->get('change_password') == 'user') {
+            if (User::where('password_reset_code', $request->code)->where('email', session()->get('email'))->exists()) {
+                User::where('email', session()->get('email'))->update(['password' => bcrypt($request->password)]);
+            }
+        } else if (session()->get('change_password') == 'supervisor') {
+            if (Supervisor::where('password_reset_code', $request->code)->where('email', session()->get('email'))->exists()) {
+                Supervisor::where('email', session()->get('email'))->update(['password' => bcrypt($request->password)]);
+            }
+        } else if (session()->get('change_password') == 'project_leads') {
+            if (ProjectLead::where('password_reset_code', $request->code)->where('email', session()->get('code'))->exists()) {
+                ProjectLead::where('email', session()->get('email'))->update(['password' => bcrypt($request->password)]);
+            }
+        }
+
+        return redirect()->to('/')->with('change_passwrod_success', 'Account Password Updated Successfully..');
+    }
+
     private function SendMail($to, $user)
     {
         $password = Str::random(8);
@@ -192,6 +258,26 @@ class UserController extends Controller
 
         User::where('id', $user->id)->update(['password' => bcrypt($password)]);
         if (Mail::to($to)->send(new UserRegistrationMail($emailContent))) {
+            return true;
+        }
+    }
+
+    private function SendForgotPasswordMail($to, $user, $modelType)
+    {
+        $otp = rand(100000, 999999);
+
+        if ($modelType == 'user') {
+            User::where('email', $to)->update(['password_reset_code' => $otp]);
+            $emailContent = view('forgot', ['user' => Auth::guard('web')->user(), 'otp' => $otp])->render();
+        } else if ($modelType == 'supervisor') {
+            Supervisor::where('email', $to)->update(['password_reset_code' => $otp]);
+            $emailContent = view('forgot', ['user' => Auth::guard('supervisor')->user(), 'otp' => $otp])->render();
+        } else if ($modelType == 'project_leads') {
+            ProjectLead::where('email', $to)->update(['password_reset_code' => $otp]);
+            $emailContent = view('forgot', ['user' => Auth::guard('project_leads')->user(), 'otp' => $otp])->render();
+        }
+
+        if (Mail::to($to)->send(new ForgotPasswordMail($emailContent))) {
             return true;
         }
     }

@@ -9,7 +9,12 @@ use App\Http\Controllers\AssignSupervisorController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [UserController::class, 'show_login']);
+Route::get('/forgot',[UserController::class,'show_forgot_password_page'])->name('users.forgot');
+Route::get('/change_password',[UserController::class,'show_change_password_page'])->name('users.show_change_password_page');
+
 Route::post('/login', [UserController::class, 'login'])->name('users.login');
+Route::post('/send_otp',[UserController::class,'send_otp'])->name('users.sendotp');
+Route::post('/update_password',[UserController::class,'update_password'])->name('users.update_password');
 
 Route::middleware(['is_login'])->group(function () {
     Route::get('/logout', [UserController::class, 'logout'])->name('users.logout');

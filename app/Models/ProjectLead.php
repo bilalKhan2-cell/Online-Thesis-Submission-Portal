@@ -24,7 +24,8 @@ class ProjectLead extends Authenticatable
         'cnic',
         'project_id',
         'address',
-        'status'
+        'status',
+        "password_reset_code"
     ];
 
     public function department()
